@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1034751406607",
+    "firebase_url": "https://stickmanservicesassignment.firebaseio.com",
+    "project_id": "stickmanservicesassignment",
+    "storage_bucket": "stickmanservicesassignment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034751406607:android:039c7664b86329a2aa297a",
+        "android_client_info": {
+          "package_name": "com.parasharinc.stickmanservices"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1034751406607-p1019enbb0fhi2ohn1bc9c08gdktj7tg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.parasharinc.stickmanservices",
+            "certificate_hash": "993d815b5f6d4627776be2c1912beb0fd5af0d3b"
+          }
+        },
+        {
+          "client_id": "1034751406607-59ms5525iscr4nni9tt7aao4jrmvr7c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZHZetXDP9uh6THHYDTTobt1OoGU6jQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1034751406607-59ms5525iscr4nni9tt7aao4jrmvr7c9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

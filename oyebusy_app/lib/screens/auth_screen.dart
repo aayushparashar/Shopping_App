@@ -123,6 +123,7 @@ class _AuthState extends State<AuthScreen> with SingleTickerProviderStateMixin {
                             }
                             return null;
                           },
+                          keyboardType: TextInputType.emailAddress,
                           onSaved: (value) {
                             details['email'] = value;
                           },
@@ -139,6 +140,8 @@ class _AuthState extends State<AuthScreen> with SingleTickerProviderStateMixin {
                             }
                             return null;
                           },
+                          obscureText: true,
+                          keyboardType: TextInputType.text,
                           onSaved: (value) {
                             details['password'] = value;
                           },
@@ -156,6 +159,8 @@ class _AuthState extends State<AuthScreen> with SingleTickerProviderStateMixin {
                                 labelText: 'Confirm Password',
                                 hintText: 'Enter your password',
                               ),
+
+                              obscureText: true,
                               validator: (value) {
                                 if (!login && value.isEmpty) {
                                   return 'Password cannot be empty.';

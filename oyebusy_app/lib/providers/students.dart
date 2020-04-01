@@ -1,11 +1,11 @@
-import 'dart:convert';
+
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 class Student {
   final String id;
   final String name;
@@ -38,20 +38,20 @@ class StudentList extends ChangeNotifier {
 
   Future<void> addStudent(
       String name, DateTime DOB, String college, File image) async {
-    const url = 'https://oyebusy-7b255.firebaseio.com/students.json';
-    final result = await http.post(url,
-        body: json.encode({
-          'name': name,
-          'dob': DOB.toString(),
-          'college': college,
-        }));
+    final Dbref = FirebaseDatabase.instance.reference();
+    var pushref = await Dbref.child("students").push();
+   await pushref.set({
+      'name': name,
+      'dob': DOB.toString(),
+      'college': college,
+    });
     StorageReference reference =
-        FirebaseStorage.instance.ref().child(json.decode(result.body)['name']);
-    StorageUploadTask uploadTask = reference.putFile(image);
+    FirebaseStorage.instance.ref();
+    StorageUploadTask uploadTask = reference.child(pushref.key).putFile(image);
     StorageTaskSnapshot snap = await uploadTask.onComplete;
 
     _students.add(Student(
-        id: json.decode(result.body)['name'],
+        id: pushref.key,
         name: name,
         DOB: DOB,
         college: college,
@@ -64,17 +64,17 @@ class StudentList extends ChangeNotifier {
 
   void editStudent(
       String id, String name, DateTime DOB, String college, File image) async {
-    final url = 'https://oyebusy-7b255.firebaseio.com/students/$id.json';
-    final result = await http.patch(url,
-        body: json.encode({
-          'name': name,
-          'dob': DOB.toString(),
-          'college': college,
-        }));
+    final Dbref = FirebaseDatabase.instance.reference();
+    await Dbref.child("students").update({
+      'name': name,
+      'dob': DOB.toString(),
+      'college': college,
+    });
+
     int idx = _students.indexWhere((stude) => stude.id == id);
 
     StorageReference reference =
-        FirebaseStorage.instance.ref().child(json.decode(result.body)['name']);
+        FirebaseStorage.instance.ref().child(id);
     StorageUploadTask uploadTask = reference.putFile(image);
     StorageTaskSnapshot snap = await uploadTask.onComplete;
     _students.removeAt(idx);
@@ -99,27 +99,24 @@ class StudentList extends ChangeNotifier {
   Future<void> fetchAndSet() async {
     try {
       print('Fetching');
-      const url = 'https://oyebusy-7b255.firebaseio.com/students.json';
-      final result = await http.get(url);
-      final extracteddata = json.decode(result.body) as Map<String, dynamic>;
-      print('data: $extracteddata');
+      final Dbref = FirebaseDatabase.instance.reference();
+      final extracteddata = await Dbref.child('students').once();
+      print('data: ${extracteddata.value}');
 
+      var map= extracteddata.value;
       List<Student> loaded = [];
-      extracteddata.forEach((key, data) async {
+
+      map.forEach((key, data) async {
         var _image;
         await FirebaseStorage.instance
             .ref()
             .child(key)
             .getDownloadURL()
             .then((onValue) {
-          print('Image $onValue');
           _image = Image.network(onValue, fit: BoxFit.cover);
-          print(_image);
         }).catchError((error) {
           print(error);
         });
-
-        print('$key +  $data');
         loaded.add(
           Student(
               id: key,
@@ -128,10 +125,8 @@ class StudentList extends ChangeNotifier {
               college: data['college'],
               image: _image),
         );
-        print('loaded:  $loaded');
       });
       _students = loaded;
-      print('***students: $_students');
     } catch (error) {
       print(error);
     }
