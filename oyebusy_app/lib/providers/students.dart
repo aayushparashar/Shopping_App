@@ -65,7 +65,7 @@ class StudentList extends ChangeNotifier {
   void editStudent(
       String id, String name, DateTime DOB, String college, File image) async {
     final Dbref = FirebaseDatabase.instance.reference();
-    await Dbref.child("students").update({
+    await Dbref.child("students").child(id).update({
       'name': name,
       'dob': DOB.toString(),
       'college': college,
@@ -102,11 +102,11 @@ class StudentList extends ChangeNotifier {
       final Dbref = FirebaseDatabase.instance.reference();
       final extracteddata = await Dbref.child('students').once();
       print('data: ${extracteddata.value}');
-
+//      extracteddata.value
       var map= extracteddata.value;
       List<Student> loaded = [];
 
-      map.forEach((key, data) async {
+     await map.forEach((key, data) async {
         var _image;
         await FirebaseStorage.instance
             .ref()
@@ -123,7 +123,8 @@ class StudentList extends ChangeNotifier {
               name: data['name'],
               DOB: DateTime.parse(data['dob']),
               college: data['college'],
-              image: _image),
+              image: _image,
+          ),
         );
       });
       _students = loaded;

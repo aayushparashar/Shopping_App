@@ -12,13 +12,21 @@ class Authenticate with ChangeNotifier {
   final DatabaseReference dbreference = FirebaseDatabase.instance.reference();
   StorageReference storageReference = FirebaseStorage.instance.ref();
 
+
   Future<void> signin(String email, String password, String nickname) async {
+    _auth.verifyPhoneNumber(phoneNumber: null,
+        timeout: null,
+        verificationCompleted: null,
+        verificationFailed: null,
+        codeSent: null,
+        codeAutoRetrievalTimeout: null)
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       final ref = await dbreference.child('userProfile').once();
       final extractedData = ref.value;
-      if(!(extractedData.containsKey(result.user.uid.toString()) && extractedData[result.user.uid]['nickname']==nickname)){
+      if (!(extractedData.containsKey(result.user.uid.toString()) &&
+          extractedData[result.user.uid]['nickname'] == nickname)) {
         throw 'Nickname is not correct!';
       }
 
@@ -31,8 +39,8 @@ class Authenticate with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> signup(
-      String email, String password, String nickname, File image) async {
+  Future<void> signup(String email, String password, String nickname,
+      File image) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -44,7 +52,7 @@ class Authenticate with ChangeNotifier {
         'nickname': nickname,
       });
       StorageUploadTask task =
-          storageReference.child(result.user.uid.toString()).putFile(image);
+      storageReference.child(result.user.uid.toString()).putFile(image);
       await task.onComplete;
 
       user = result.user;
@@ -61,5 +69,18 @@ class Authenticate with ChangeNotifier {
     user = null;
     auth = false;
     notifyListeners();
+  }
+
+  Future<void> phoneVerify(String phoneNumber) {
+    _auth.verifyPhoneNumber(phoneNumber: phoneNumber,
+        timeout: Duration(minutes: 5),
+        verificationCompleted: (credential){
+
+        },
+        verificationFailed: (exception){
+
+        },
+        codeSent: null,
+        codeAutoRetrievalTimeout: null);
   }
 }
