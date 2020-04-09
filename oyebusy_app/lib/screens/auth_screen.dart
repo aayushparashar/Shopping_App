@@ -114,18 +114,18 @@ class _AuthState extends State<AuthScreen> with SingleTickerProviderStateMixin {
                       children: <Widget>[
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: 'Email',
-                            hintText: 'Enter your email',
+                            labelText: 'Phone Number',
+                            hintText: 'Enter your Phone Number',
                           ),
                           validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Email cannot be empty.';
+                            if (value.length!=10) {
+                              return 'Invalid Phone Number';
                             }
                             return null;
                           },
-                          keyboardType: TextInputType.emailAddress,
+                          keyboardType: TextInputType.phone,
                           onSaved: (value) {
-                            details['email'] = value;
+                            details['number'] = value;
                           },
                         ),
                         TextFormField(

@@ -98,10 +98,10 @@ class StudentList extends ChangeNotifier {
 
   Future<void> fetchAndSet() async {
     try {
-      print('Fetching');
+//      print('Fetching');
       final Dbref = FirebaseDatabase.instance.reference();
       final extracteddata = await Dbref.child('students').once();
-      print('data: ${extracteddata.value}');
+//      print('data: ${extracteddata.value}');
 //      extracteddata.value
       var map= extracteddata.value;
       List<Student> loaded = [];
